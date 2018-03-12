@@ -1,7 +1,11 @@
 service cloud.firestore {
   match /databases/{database}/documents {
+    function robsonUser() {
+      return request.auth.email.endsWith('@robson.com.pl');
+    }
+    
     match /{document=**} {
-      allow read, write;
+      allow read, write: if robsonUser();
     }
   }
 }
