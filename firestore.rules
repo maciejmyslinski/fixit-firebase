@@ -1,11 +1,15 @@
 service cloud.firestore {
   match /databases/{database}/documents {
     function robsonUser() {
-      return request.auth.email.endsWith('@robson.com.pl');
+      return request.auth.token.email.matches('.*@robson[.]com[.]pl');
     }
-    
+
+    function adminUser() {
+      return request.auth.token.email.matches('.*@maciejmyslinski[.]com');
+    }
+
     match /{document=**} {
-      allow read, write: if robsonUser();
+      allow read, write: if robsonUser() || adminUser();
     }
   }
 }
